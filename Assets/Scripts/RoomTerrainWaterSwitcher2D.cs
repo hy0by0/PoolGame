@@ -6,6 +6,7 @@ public sealed class RoomTerrainWaterSwitcher2D : MonoBehaviour
 {
     [Header("Inspector References")]
     [SerializeField] private Camera targetCamera;
+    [SerializeField] private AreaCameraController2D areaCameraController;
     [SerializeField] private TerrainWaterSwitchable2D[] switchables;
 
     [Header("Camera Area")]
@@ -14,7 +15,9 @@ public sealed class RoomTerrainWaterSwitcher2D : MonoBehaviour
     // 現在カメラ内にある切り替え対象だけを反転する。
     public void ToggleCurrentCameraArea()
     {
-        Bounds cameraBounds = GetCameraBounds();
+        Bounds cameraBounds = areaCameraController != null
+            ? areaCameraController.CurrentAreaBounds
+            : GetCameraBounds();
 
         for (int i = 0; i < switchables.Length; i++)
         {
@@ -42,5 +45,12 @@ public sealed class RoomTerrainWaterSwitcher2D : MonoBehaviour
         bool xOverlaps = first.min.x <= second.max.x && first.max.x >= second.min.x;
         bool yOverlaps = first.min.y <= second.max.y && first.max.y >= second.min.y;
         return xOverlaps && yOverlaps;
+    }
+
+    private void Reset()
+    {
+        targetCamera = Camera.main;
+        areaCameraController = FindFirstObjectByType<AreaCameraController2D>();
+        switchables = FindObjectsByType<TerrainWaterSwitchable2D>(FindObjectsSortMode.InstanceID);
     }
 }
