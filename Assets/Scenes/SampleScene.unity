@@ -130,6 +130,8 @@ GameObject:
   - component: {fileID: 73153856}
   - component: {fileID: 73153855}
   - component: {fileID: 73153854}
+  - component: {fileID: 73153857}
+  - component: {fileID: 73153858}
   m_Layer: 3
   m_Name: Ground
   m_TagString: Untagged
@@ -257,6 +259,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &73153857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73153853}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efc6271d5c394c9cb1ca1caa4a0bdb0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaterVolume2D
+  waterCollider: {fileID: 73153854}
+  setTriggerOnAwake: 0
+--- !u!114 &73153858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73153853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6939b704334f4134b97cda2a90af6c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainWaterSwitchable2D
+  switchCollider: {fileID: 73153854}
+  waterVolume: {fileID: 73153857}
+  spriteRenderer: {fileID: 73153855}
+  currentState: 0
+  groundLayerName: Ground
+  waterLayerName: Water
+  terrainColor: {r: 1, g: 1, b: 1, a: 1}
+  waterColor: {r: 0.25, g: 0.65, b: 1, a: 0.55}
 --- !u!1 &402595843
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,6 +305,7 @@ GameObject:
   - component: {fileID: 402595846}
   - component: {fileID: 402595845}
   - component: {fileID: 402595844}
+  - component: {fileID: 402595848}
   m_Layer: 4
   m_Name: Water
   m_TagString: Untagged
@@ -289,6 +326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaterVolume2D
   waterCollider: {fileID: 402595845}
+  setTriggerOnAwake: 1
 --- !u!61 &402595845
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -409,6 +447,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &402595848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 402595843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6939b704334f4134b97cda2a90af6c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainWaterSwitchable2D
+  switchCollider: {fileID: 402595845}
+  waterVolume: {fileID: 402595844}
+  spriteRenderer: {fileID: 402595846}
+  currentState: 1
+  groundLayerName: Ground
+  waterLayerName: Water
+  terrainColor: {r: 1, g: 1, b: 1, a: 1}
+  waterColor: {r: 0.25, g: 0.65, b: 1, a: 0.55}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,6 +479,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -546,6 +605,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d23d910f95b74d89934c199a45397070, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoomTerrainWaterSwitcher2D
+  targetCamera: {fileID: 519420031}
+  switchables:
+  - {fileID: 73153858}
+  - {fileID: 1300590689}
+  - {fileID: 602877281}
+  - {fileID: 402595848}
+  - {fileID: 1195149582}
+  cameraAreaPadding: 0.05
 --- !u!1 &602877276
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,6 +636,8 @@ GameObject:
   - component: {fileID: 602877279}
   - component: {fileID: 602877278}
   - component: {fileID: 602877277}
+  - component: {fileID: 602877280}
+  - component: {fileID: 602877281}
   m_Layer: 3
   m_Name: Ground (2)
   m_TagString: Untagged
@@ -684,6 +765,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &602877280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602877276}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efc6271d5c394c9cb1ca1caa4a0bdb0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaterVolume2D
+  waterCollider: {fileID: 602877277}
+  setTriggerOnAwake: 0
+--- !u!114 &602877281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602877276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6939b704334f4134b97cda2a90af6c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainWaterSwitchable2D
+  switchCollider: {fileID: 602877277}
+  waterVolume: {fileID: 602877280}
+  spriteRenderer: {fileID: 602877278}
+  currentState: 0
+  groundLayerName: Ground
+  waterLayerName: Water
+  terrainColor: {r: 1, g: 0.24313724, b: 0.3254261, a: 1}
+  waterColor: {r: 0.25, g: 0.65, b: 1, a: 0.55}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,6 +897,8 @@ GameObject:
   - component: {fileID: 1011906692}
   - component: {fileID: 1011906691}
   - component: {fileID: 1011906690}
+  - component: {fileID: 1011906696}
+  - component: {fileID: 1011906697}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -857,6 +974,33 @@ MonoBehaviour:
   m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1011906696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011906689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a4cde719c5f4abe919355e660d52d73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilityState
+  hasTerrainWaterSwitchAbility: 1
+--- !u!114 &1011906697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011906689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb33e8563b6a440f93967ff26c4d0d95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerTerrainWaterSwitchInput
+  abilityState: {fileID: 1011906696}
+  roomSwitcher: {fileID: 519420033}
 --- !u!50 &1011906692
 Rigidbody2D:
   serializedVersion: 5
@@ -1016,6 +1160,7 @@ GameObject:
   - component: {fileID: 1195149580}
   - component: {fileID: 1195149579}
   - component: {fileID: 1195149578}
+  - component: {fileID: 1195149582}
   m_Layer: 4
   m_Name: water2
   m_TagString: Untagged
@@ -1036,6 +1181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaterVolume2D
   waterCollider: {fileID: 1195149579}
+  setTriggerOnAwake: 1
 --- !u!61 &1195149579
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1156,6 +1302,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1195149582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195149577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6939b704334f4134b97cda2a90af6c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainWaterSwitchable2D
+  switchCollider: {fileID: 1195149579}
+  waterVolume: {fileID: 1195149578}
+  spriteRenderer: {fileID: 1195149580}
+  currentState: 1
+  groundLayerName: Ground
+  waterLayerName: Water
+  terrainColor: {r: 1, g: 1, b: 1, a: 1}
+  waterColor: {r: 0.25, g: 0.65, b: 1, a: 0.55}
 --- !u!1 &1300590684
 GameObject:
   m_ObjectHideFlags: 0
@@ -1167,6 +1333,8 @@ GameObject:
   - component: {fileID: 1300590687}
   - component: {fileID: 1300590686}
   - component: {fileID: 1300590685}
+  - component: {fileID: 1300590688}
+  - component: {fileID: 1300590689}
   m_Layer: 3
   m_Name: Ground (1)
   m_TagString: Untagged
@@ -1294,6 +1462,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1300590688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300590684}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efc6271d5c394c9cb1ca1caa4a0bdb0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaterVolume2D
+  waterCollider: {fileID: 1300590685}
+  setTriggerOnAwake: 0
+--- !u!114 &1300590689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300590684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6939b704334f4134b97cda2a90af6c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainWaterSwitchable2D
+  switchCollider: {fileID: 1300590685}
+  waterVolume: {fileID: 1300590688}
+  spriteRenderer: {fileID: 1300590686}
+  currentState: 0
+  groundLayerName: Ground
+  waterLayerName: Water
+  terrainColor: {r: 1, g: 0.24313724, b: 0.3254261, a: 1}
+  waterColor: {r: 0.25, g: 0.65, b: 1, a: 0.55}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

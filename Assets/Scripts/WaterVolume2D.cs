@@ -7,13 +7,26 @@ public sealed class WaterVolume2D : MonoBehaviour
     [Header("Inspector References")]
     [SerializeField] private Collider2D waterCollider;
 
+    [Header("Startup")]
+    [SerializeField] private bool setTriggerOnAwake = true;
+
     public Bounds VolumeBounds => waterCollider.bounds;
     public float SurfaceY => waterCollider.bounds.max.y;
 
     // 水は通り抜ける判定として使うため、起動時にTriggerへ揃える。
     private void Awake()
     {
-        waterCollider.isTrigger = true;
+        if (setTriggerOnAwake)
+        {
+            waterCollider.isTrigger = true;
+        }
+    }
+
+    // 切り替え能力から、水として使うかどうかを反映する。
+    public void SetWaterActive(bool waterActive)
+    {
+        waterCollider.isTrigger = waterActive;
+        enabled = waterActive;
     }
 
     // コンポーネント追加直後に、自分のColliderを自動で入れるための補助。

@@ -38,8 +38,10 @@ public sealed class PlayerMovement2D : MonoBehaviour
     [SerializeField] private float waterCeilingCheckDistance = 0.04f;
 
     private readonly RaycastHit2D[] groundHits = new RaycastHit2D[4];
+    private readonly Collider2D[] waterOverlapColliders = new Collider2D[8];
     private readonly WaterVolume2D[] contactedWaters = new WaterVolume2D[8];
     private ContactFilter2D groundContactFilter;
+    private ContactFilter2D waterContactFilter;
     private Vector2 moveInput;
     private int waterContactCount;
     private float jumpBufferTimer;
@@ -53,6 +55,10 @@ public sealed class PlayerMovement2D : MonoBehaviour
         groundContactFilter = new ContactFilter2D();
         groundContactFilter.SetLayerMask(groundLayerMask);
         groundContactFilter.useTriggers = false;
+
+        waterContactFilter = new ContactFilter2D();
+        waterContactFilter.SetLayerMask(waterLayerMask);
+        waterContactFilter.useTriggers = true;
     }
 
     // 開始直後から物理演算が眠らないように、状態を初期化してRigidbody2Dを起こす。
@@ -67,6 +73,7 @@ public sealed class PlayerMovement2D : MonoBehaviour
     // 物理更新ごとに、地上/空中/水中のどの移動を行うかを切り替える。
     private void FixedUpdate()
     {
+        UpdateWaterContacts();
         UpdateGroundedState();
         UpdateJumpTimers();
 
@@ -194,6 +201,17 @@ public sealed class PlayerMovement2D : MonoBehaviour
         playerRigidbody.linearVelocity = velocity;
     }
 
+    // 現在重なっている水領域を毎回読み直し、切り替え直後の状態も反映する。
+    private void UpdateWaterContacts()
+    {
+        waterContactCount = bodyCollider.Overlap(waterContactFilter, waterOverlapColliders);
+
+        for (int i = 0; i < waterContactCount; i++)
+        {
+            contactedWaters[i] = waterOverlapColliders[i].GetComponent<WaterVolume2D>();
+        }
+    }
+
     // 触れている水の中から、プレイヤーの中心Xに最も合う水領域を選ぶ。
     private Bounds FindCurrentWaterBounds()
     {
@@ -240,59 +258,6 @@ public sealed class PlayerMovement2D : MonoBehaviour
         float horizontalDistance = Mathf.Abs(playerCenterX - waterBounds.center.x);
         bool containsPlayerX = playerCenterX >= waterBounds.min.x && playerCenterX <= waterBounds.max.x;
         return containsPlayerX ? horizontalDistance : horizontalDistance + 10000f;
-    }
-
-    // 水レイヤーの Trigger に入った時、候補の水領域として保持する。
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        int otherLayerBit = 1 << other.gameObject.layer;
-
-        if ((waterLayerMask.value & otherLayerBit) != 0)
-        {
-            if (waterContactCount < contactedWaters.Length)
-            {
-                contactedWaters[waterContactCount] = other.GetComponent<WaterVolume2D>();
-                waterContactCount++;
-            }
-        }
-    }
-
-    // 水レイヤーの Trigger から出た時、保持していた水領域を外す。
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        int otherLayerBit = 1 << other.gameObject.layer;
-
-        if ((waterLayerMask.value & otherLayerBit) != 0)
-        {
-            WaterVolume2D exitedWater = other.GetComponent<WaterVolume2D>();
-
-            for (int i = 0; i < waterContactCount; i++)
-            {
-                if (ReferenceEquals(contactedWaters[i], exitedWater))
-                {
-                    RemoveContactedWaterAt(i);
-                    break;
-                }
-            }
-
-            if (waterContactCount == 0)
-            {
-                waterMovementActive = false;
-            }
-        }
-    }
-
-    // 配列の途中にある水領域を取り除き、後ろの要素を前へ詰める。
-    private void RemoveContactedWaterAt(int removeIndex)
-    {
-        int lastIndex = waterContactCount - 1;
-
-        for (int i = removeIndex; i < lastIndex; i++)
-        {
-            contactedWaters[i] = contactedWaters[i + 1];
-        }
-
-        waterContactCount = lastIndex;
     }
 
     // コンポーネント追加直後に、よく使う参照を自動で入れるための補助。
