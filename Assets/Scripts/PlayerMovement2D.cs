@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DisallowMultipleComponent]
@@ -28,7 +28,7 @@ public sealed class PlayerMovement2D : MonoBehaviour
     [Header("Water Movement")]
     [SerializeField] private LayerMask waterLayerMask;
     [SerializeField] private float waterHorizontalSpeed = 3.2f;
-    [SerializeField] private float buoyancyAcceleration = 28f;
+    [SerializeField] private float buoyancyAcceleration = 28f; //浮力加速度
     [SerializeField] private float maxWaterRiseSpeed = 3.6f;
     [SerializeField] private float waterSurfaceOffset = 0.08f;
     [SerializeField] private float waterActivationDepth = 0.08f;
