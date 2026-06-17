@@ -4,15 +4,21 @@ using UnityEngine;
 public sealed class CameraArea2D : MonoBehaviour
 {
     [Header("Identity")]
+    [Tooltip("エリアを識別するためのIDです。Renameを押すとGrid Positionから自動命名されます。")]
     [SerializeField] private string areaId = "A00";
+    [Tooltip("Sceneビューのラベルに表示する分かりやすい名前です。")]
     [SerializeField] private string displayName = "Area";
+    [Tooltip("マップ全体の中で、このエリアがどのマス位置にあるかを示す座標です。")]
     [SerializeField] private Vector2Int gridPosition;
 
     [Header("Area")]
+    [Tooltip("このエリアのワールド座標上の幅と高さです。通常はCamera Area MapのArea Sizeに合わせます。")]
     [SerializeField] private Vector2 size = new Vector2(17.77778f, 10f);
+    [Tooltip("エリア判定範囲の中心をTransform位置からずらしたい場合に使います。")]
     [SerializeField] private Vector2 offset;
 
     [Header("Camera")]
+    [Tooltip("カメラをエリア中心以外へ置きたい場合に指定します。未指定ならエリア中心へ移動します。")]
     [SerializeField] private Transform cameraAnchor;
 
     public string AreaId => areaId;

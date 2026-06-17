@@ -2589,6 +2589,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraAreaMap2D
   areaSize: {x: 17.77778, y: 10}
   areaIdPrefix: A
+  newAreaGridPosition: {x: 2, y: 0}
+  newAreaDisplayName: 
   areas:
   - {fileID: 2000000003}
   - {fileID: 2000000013}

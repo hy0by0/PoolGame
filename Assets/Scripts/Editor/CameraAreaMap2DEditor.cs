@@ -15,12 +15,12 @@ public sealed class CameraAreaMap2DEditor : Editor
 
         using (new EditorGUILayout.HorizontalScope())
         {
-            if (GUILayout.Button("Collect"))
+            if (GUILayout.Button(new GUIContent("Collect", "子オブジェクトからCameraArea2Dを集めて一覧を更新します。")))
             {
                 areaMap.CollectAreasFromChildrenMenu();
             }
 
-            if (GUILayout.Button("Snap"))
+            if (GUILayout.Button(new GUIContent("Snap", "各エリアをGrid PositionとArea Sizeに合わせた位置へ移動します。")))
             {
                 areaMap.SnapChildrenToGrid();
             }
@@ -28,15 +28,20 @@ public sealed class CameraAreaMap2DEditor : Editor
 
         using (new EditorGUILayout.HorizontalScope())
         {
-            if (GUILayout.Button("Rename"))
+            if (GUILayout.Button(new GUIContent("Rename", "各エリアのArea IdとGameObject名をGrid Positionから付け直します。")))
             {
                 areaMap.RenameChildrenFromGrid();
             }
 
-            if (GUILayout.Button("Create Right"))
+            if (GUILayout.Button(new GUIContent("Create Right", "既存エリアの右端のさらに右へ、新しいエリアを作成します。")))
             {
                 areaMap.CreateAreaToRight();
             }
+        }
+
+        if (GUILayout.Button(new GUIContent("Create At Grid", "Create AreaのNew Area Grid Positionで指定した座標に新しいエリアを作成します。")))
+        {
+            areaMap.CreateAreaAtGrid();
         }
 
         EditorGUILayout.Space(6f);

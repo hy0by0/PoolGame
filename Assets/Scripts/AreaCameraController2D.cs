@@ -4,16 +4,23 @@ using UnityEngine;
 public sealed class AreaCameraController2D : MonoBehaviour
 {
     [Header("Inspector References")]
+    [Tooltip("実際に移動させるメインカメラです。未設定ならCamera.mainを探します。")]
     [SerializeField] private Camera targetCamera;
+    [Tooltip("エリア判定に使うプレイヤーのTransformです。未設定ならPlayerMovement2Dを探します。")]
     [SerializeField] private Transform player;
+    [Tooltip("エリア一覧をまとめて管理するCamera Area Mapです。設定されている場合はこちらを優先します。")]
     [SerializeField] private CameraAreaMap2D areaMap;
+    [Tooltip("個別に指定するエリア一覧です。Area Mapがない場合のフォールバックとして使います。")]
     [SerializeField] private CameraArea2D[] areas;
 
     [Header("Transition")]
+    [Tooltip("エリア切り替え時のカメラ移動時間です。0なら即座に切り替わります。")]
     [SerializeField] private float transitionDuration = 0f;
 
     [Header("Startup")]
+    [Tooltip("参照が未設定の場合に、起動時に自動でCameraやPlayerなどを探します。")]
     [SerializeField] private bool autoFindReferences = true;
+    [Tooltip("Areasが空の場合に、起動時にシーン内またはArea Mapからエリア一覧を自動収集します。")]
     [SerializeField] private bool autoDiscoverAreas = true;
 
     private CameraArea2D currentArea;

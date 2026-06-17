@@ -9,14 +9,24 @@ using UnityEditor;
 public sealed class CameraAreaMap2D : MonoBehaviour
 {
     [Header("Area Defaults")]
+    [Tooltip("1エリアぶんの幅と高さです。カメラ1画面に収まるサイズにします。")]
     [SerializeField] private Vector2 areaSize = new Vector2(17.77778f, 10f);
+    [Tooltip("Grid PositionからArea Idを作るときの先頭文字です。")]
     [SerializeField] private string areaIdPrefix = "A";
 
+    [Header("Create Area")]
+    [Tooltip("Create At Gridで新規作成するエリアのグリッド座標です。")]
+    [SerializeField] private Vector2Int newAreaGridPosition = new Vector2Int(1, 0);
+    [Tooltip("Create At Gridで新規作成するエリアの表示名です。空ならArea Idを使います。")]
+    [SerializeField] private string newAreaDisplayName = "";
+
     [Header("Managed Areas")]
+    [Tooltip("このマップが管理するCameraArea2D一覧です。Collectで子オブジェクトから自動収集できます。")]
     [SerializeField] private CameraArea2D[] areas = Array.Empty<CameraArea2D>();
 
     public CameraArea2D[] Areas => areas;
     public Vector2 AreaSize => areaSize;
+    public Vector2Int NewAreaGridPosition => newAreaGridPosition;
 
     public CameraArea2D FindAreaContaining(Vector2 worldPosition)
     {
@@ -144,16 +154,23 @@ public sealed class CameraAreaMap2D : MonoBehaviour
         CreateArea(new Vector2Int(nextX, 0));
     }
 
+    [ContextMenu("Create Area At Grid")]
+    public void CreateAreaAtGrid()
+    {
+        CreateArea(newAreaGridPosition);
+    }
+
     private CameraArea2D CreateArea(Vector2Int gridPosition)
     {
         string areaId = BuildAreaId(gridPosition);
+        string displayName = string.IsNullOrWhiteSpace(newAreaDisplayName) ? areaId : newAreaDisplayName;
         GameObject areaObject = new GameObject($"Camera Area {areaId}");
         Undo.RegisterCreatedObjectUndo(areaObject, "Create Camera Area");
         areaObject.transform.SetParent(transform);
         areaObject.transform.position = GridToWorldPosition(gridPosition);
 
         CameraArea2D area = areaObject.AddComponent<CameraArea2D>();
-        area.Configure(areaId, areaId, gridPosition, areaSize);
+        area.Configure(areaId, displayName, gridPosition, areaSize);
         CollectAreasFromChildren();
         EditorUtility.SetDirty(this);
         return area;

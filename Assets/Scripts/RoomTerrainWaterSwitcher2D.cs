@@ -5,11 +5,15 @@ using UnityEngine;
 public sealed class RoomTerrainWaterSwitcher2D : MonoBehaviour
 {
     [Header("Inspector References")]
+    [Tooltip("フォールバック用のカメラです。Area Camera Controllerが未設定の場合、この表示範囲を使います。")]
     [SerializeField] private Camera targetCamera;
+    [Tooltip("現在プレイヤーがいるCameraArea2Dを取得するためのコントローラです。")]
     [SerializeField] private AreaCameraController2D areaCameraController;
+    [Tooltip("地形/水の切り替え対象になるオブジェクト一覧です。")]
     [SerializeField] private TerrainWaterSwitchable2D[] switchables;
 
     [Header("Camera Area")]
+    [Tooltip("フォールバックのカメラ範囲判定を少し広げる余白です。Area Camera Controller使用時は基本的に使いません。")]
     [SerializeField] private float cameraAreaPadding = 0.05f;
 
     // 現在カメラ内にある切り替え対象だけを反転する。
