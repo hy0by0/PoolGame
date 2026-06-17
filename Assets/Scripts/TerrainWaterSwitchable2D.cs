@@ -23,6 +23,15 @@ public sealed class TerrainWaterSwitchable2D : MonoBehaviour
         ApplyState(currentState);
     }
 
+    // 指定されたエリア範囲に、この切り替え対象が含まれるかを返す。
+    public bool IsInsideArea(Bounds areaBounds)
+    {
+        Bounds switchBounds = SwitchBounds;
+        bool xOverlaps = areaBounds.min.x <= switchBounds.max.x && areaBounds.max.x >= switchBounds.min.x;
+        bool yOverlaps = areaBounds.min.y <= switchBounds.max.y && areaBounds.max.y >= switchBounds.min.y;
+        return xOverlaps && yOverlaps;
+    }
+
     // 現在の状態を反対側へ切り替える。
     public void ToggleState()
     {

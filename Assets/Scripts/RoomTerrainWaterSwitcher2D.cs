@@ -1,60 +1,91 @@
+using System;
 using UnityEngine;
 
-// カメラが見ている1部屋内の地形と水をまとめて切り替えるクラス。
+// プレイヤーがいるエリア内の地形と水だけをまとめて切り替えるクラス。
 [DisallowMultipleComponent]
 public sealed class RoomTerrainWaterSwitcher2D : MonoBehaviour
 {
     [Header("Inspector References")]
-    [Tooltip("フォールバック用のカメラです。Area Camera Controllerが未設定の場合、この表示範囲を使います。")]
-    [SerializeField] private Camera targetCamera;
     [Tooltip("現在プレイヤーがいるCameraArea2Dを取得するためのコントローラです。")]
     [SerializeField] private AreaCameraController2D areaCameraController;
-    [Tooltip("地形/水の切り替え対象になるオブジェクト一覧です。")]
-    [SerializeField] private TerrainWaterSwitchable2D[] switchables;
 
-    [Header("Camera Area")]
-    [Tooltip("フォールバックのカメラ範囲判定を少し広げる余白です。Area Camera Controller使用時は基本的に使いません。")]
-    [SerializeField] private float cameraAreaPadding = 0.05f;
+    private TerrainWaterSwitchable2D[] activeSwitchables = Array.Empty<TerrainWaterSwitchable2D>();
+    private CameraArea2D activeArea;
 
-    // 現在カメラ内にある切り替え対象だけを反転する。
+    private void Awake()
+    {
+        RefreshCurrentAreaTargets();
+    }
+
+    private void LateUpdate()
+    {
+        RefreshAreaTargetsWhenAreaChanged();
+    }
+
+    // 現在プレイヤーがいるエリア内の切り替え対象だけを反転する。
     public void ToggleCurrentCameraArea()
     {
-        Bounds cameraBounds = areaCameraController != null
-            ? areaCameraController.CurrentAreaBounds
-            : GetCameraBounds();
+        RefreshAreaTargetsWhenAreaChanged();
 
-        for (int i = 0; i < switchables.Length; i++)
+        for (int i = 0; i < activeSwitchables.Length; i++)
         {
-            if (Intersects2D(cameraBounds, switchables[i].SwitchBounds))
-            {
-                switchables[i].ToggleState();
-            }
+            activeSwitchables[i].ToggleState();
         }
     }
 
-    // Orthographic Camera の表示範囲をワールド座標のBoundsとして返す。
-    private Bounds GetCameraBounds()
+    // プレイヤーのエリアが変わっていたら、切り替え対象を集め直す。
+    private void RefreshAreaTargetsWhenAreaChanged()
     {
-        float halfHeight = targetCamera.orthographicSize + cameraAreaPadding;
-        float halfWidth = halfHeight * targetCamera.aspect + cameraAreaPadding;
-        Vector3 cameraPosition = targetCamera.transform.position;
-        Vector3 center = new Vector3(cameraPosition.x, cameraPosition.y, 0f);
-        Vector3 size = new Vector3(halfWidth * 2f, halfHeight * 2f, 1f);
-        return new Bounds(center, size);
+        CameraArea2D nextArea = areaCameraController.CurrentArea;
+
+        if (ReferenceEquals(nextArea, activeArea))
+        {
+            return;
+        }
+
+        activeArea = nextArea;
+        RefreshCurrentAreaTargets();
     }
 
-    // Z位置に関係なく、X/Yの範囲が重なっているかを調べる。
-    private static bool Intersects2D(Bounds first, Bounds second)
+    // 現在エリア範囲と重なるTerrainWaterSwitchable2Dをシーンから自動収集する。
+    public void RefreshCurrentAreaTargets()
     {
-        bool xOverlaps = first.min.x <= second.max.x && first.max.x >= second.min.x;
-        bool yOverlaps = first.min.y <= second.max.y && first.max.y >= second.min.y;
-        return xOverlaps && yOverlaps;
+        Bounds areaBounds = areaCameraController.CurrentAreaBounds;
+        TerrainWaterSwitchable2D[] allSwitchables = FindObjectsByType<TerrainWaterSwitchable2D>(FindObjectsSortMode.InstanceID);
+        int activeCount = CountSwitchablesInsideArea(allSwitchables, areaBounds);
+        TerrainWaterSwitchable2D[] nextSwitchables = new TerrainWaterSwitchable2D[activeCount];
+        int nextIndex = 0;
+
+        for (int i = 0; i < allSwitchables.Length; i++)
+        {
+            if (allSwitchables[i].IsInsideArea(areaBounds))
+            {
+                nextSwitchables[nextIndex] = allSwitchables[i];
+                nextIndex++;
+            }
+        }
+
+        activeSwitchables = nextSwitchables;
+    }
+
+    // 現在エリアに含まれる切り替え対象の数を数える。
+    private static int CountSwitchablesInsideArea(TerrainWaterSwitchable2D[] allSwitchables, Bounds areaBounds)
+    {
+        int count = 0;
+
+        for (int i = 0; i < allSwitchables.Length; i++)
+        {
+            if (allSwitchables[i].IsInsideArea(areaBounds))
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     private void Reset()
     {
-        targetCamera = Camera.main;
         areaCameraController = FindFirstObjectByType<AreaCameraController2D>();
-        switchables = FindObjectsByType<TerrainWaterSwitchable2D>(FindObjectsSortMode.InstanceID);
     }
 }
